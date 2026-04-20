@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="vi">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>English Hot Pot Party - Cầu Giấy 2023</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css"
+      rel="stylesheet"
+    />
+    <style>
+      @import url("https://fonts.googleapis.com/css2?family=Quicksand:wght@400;600;700&display=swap");
+
+      :root {
+        --manhwa-pink: #fff1f1;
+        --hotpot-red: #ff5e5e;
+        --hotpot-gold: #ffcc33;
+        --pot-border: #334155;
+        --text-main: #2d3436;
+      }
+
+      body {
+        font-family: "Quicksand", sans-serif;
+        background-color: #fffafb;
+        color: var(--text-main);
+        overflow-x: hidden;
+      }
+      .glass-card {
+        background: rgba(255, 255, 255, 0.98);
+        border-radius: 40px;
+        border: 4px solid #fff;
+        box-shadow: 0 20px 50px rgba(255, 94, 94, 0.08);
+      }
+
+      .answer-btn {
+        transition: all 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        border: 2px solid #fff1f1;
+        background: white;
+        border-radius: 25px;
+      }
+      .answer-btn:hover:not(:disabled) {
+        transform: scale(1.02);
+        border-color: #ff9a8b;
+        background-color: #fff9f9;
+      }
+      .correct {
+        background-color: #d1fae5 !important;
+        color: #065f46 !important;
+        border-color: #34d399 !important;
+      }
+      .wrong {
+        background-color: #fee2e2 !important;
+        color: #991b1b !important;
+        border-color: #f87171 !important;
+      }
+
+      /* Writing Input */
+      .writing-input {
+        width: 100%;
+        padding: 1.5rem;
+        border-radius: 25px;
+        border: 3px dashed #ffb7b7;
+        background: #fffafa;
+        font-size: 1.25rem;
+        font-weight: 600;
+        outline: none;
+        transition: all 0.3s;
+      }
+      .writing-input:focus {
+        border-style: solid;
+        border-color: var(--hotpot-red);
+        box-shadow: 0 0 15px rgba(255, 94, 94, 0.1);
+      }
+      .writing-input:disabled {
+        background: #f1f5f9;
+        border-color: #cbd5e1;
+        color: #94a3b8;
+      }
+
+      /* Aesthetic Pot */
+      .pot-wrapper {
+        position: relative;
+        width: 260px;
+        height: 180px;
+        margin: 10px auto;
+      }
+      .pot-base {
+        width: 100%;
+        height: 100px;
+        background: linear-gradient(145deg, #cbd5e1, #64748b);
+        border: 5px solid var(--pot-border);
+        border-radius: 10px 10px 120px 120px;
+        position: absolute;
+        bottom: 0;
+        z-index: 1;
+      }
+      .pot-rim {
+        width: 96%;
+        height: 50px;
+        background: #1e293b;
+        border: 5px solid var(--pot-border);
+        border-radius: 50%;
+        position: absolute;
+        top: 60px;
+        left: 2%;
+        z-index: 3;
+        overflow: hidden;
+        display: flex;
+      }
+      .soup-l {
+        width: 50%;
+        height: 100%;
+        background: var(--hotpot-red);
+        position: relative;
+        border-right: 2px solid var(--pot-border);
+      }
+      .soup-r {
+        width: 50%;
+        height: 100%;
+        background: var(--hotpot-gold);
+        position: relative;
+      }
+
+      .pot-ear {
+        width: 40px;
+        height: 12px;
+        background: var(--pot-border);
+        border-radius: 20px;
+        position: absolute;
+        top: 100px;
+        z-index: 0;
+      }
+      .ear-l {
+        left: -15px;
+      }
+      .ear-r {
+        right: -15px;
+      }
+
+      .steam {
+        position: absolute;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        display: flex;
+        gap: 20px;
+        z-index: 0;
+      }
+      .steam span {
+        width: 15px;
+        height: 15px;
+        background: rgba(226, 232, 240, 0.8);
+        border-radius: 50%;
+        animation: steamRise 2.5s infinite ease-out;
+        filter: blur(5px);
+      }
+      @keyframes steamRise {
+        0% {
+          transform: translateY(0) scale(1);
+          opacity: 0;
+        }
+        50% {
+          opacity: 0.6;
+        }
+        100% {
+          transform: translateY(-80px) scale(2.5);
+          opacity: 0;
+        }
+      }
+
+      /* Improved Food Animation: Drop then Float */
+      .food {
+        position: absolute;
+        font-size: 1.8rem;
+        z-index: 10;
+        animation: dropFood 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275)
+            forwards,
+          bobbing 3s infinite ease-in-out 0.6s;
+      }
+
+      @keyframes dropFood {
+        from {
+          transform: translateY(-60px) scale(0);
+          opacity: 0;
+        }
+        to {
+          transform: translateY(0) scale(1);
+          opacity: 1;
+        }
+      }
+
+      @keyframes bobbing {
+        0%,
+        100% {
+          transform: translateY(0) rotate(0deg);
+        }
+        50% {
+          transform: translateY(-4px) rotate(5deg);
+        }
+      }
+
+      .underlined {
+        text-decoration: underline;
+        text-underline-offset: 6px;
+        color: var(--hotpot-red);
+        font-weight: 800;
+      }
+      .writing-tag {
+        border-left: 6px solid var(--hotpot-red);
+        padding-left: 15px;
+        margin-top: 10px;
+        display: block;
+        font-style: italic;
+      }
+
+      .fade-in {
+        animation: fadeIn 0.4s ease-out;
+      }
+      @keyframes fadeIn {
+        from {
+          opacity: 0;
+          transform: translateY(10px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+    </style>
+  </head>
+  <body class="p-4 md:p-8">
+    <div id="app" class="max-w-6xl mx-auto">
+      <!-- Header -->
+      <header
+        class="flex flex-wrap justify-between items-center mb-10 glass-card p-8 border-b-8 border-red-50"
+      >
+        <div class="flex items-center space-x-6">
+          <div class="bg-red-50 p-4 rounded-3xl text-5xl shadow-inner">🍲</div>
+          <div>
+            <h1 class="text-3xl font-black text-gray-800 tracking-tight">
+              CAU GIAY <span class="text-red-500">HOT POT</span>
+            </h1>
+            <div
+              class="flex items-center space-x-3 text-gray-400 font-bold text-xs uppercase tracking-widest"
+            >
+              <span class="bg-red-100 text-red-500 px-2 py-0.5 rounded"
+                >2023 Edition</span
+              >
+              <i class="fas fa-bolt text-yellow-400"></i>
+              <span>Teacher Mode</span>
+            </div>
+          </div>
+        </div>
+        <div class="flex items-center space-x-5 mt-4 md:mt-0">
+          <div
+            class="bg-white px-8 py-4 rounded-3xl flex items-center shadow-sm border border-red-50"
+          >
+            <span class="text-3xl mr-3">💰</span>
+            <span id="score-display" class="text-3xl font-black text-orange-500"
+              >0</span
+            >
+          </div>
+          <button
+            onclick="toggleView('shop')"
+            class="bg-red-500 text-white px-8 py-4 rounded-3xl hover:bg-red-600 transition-all shadow-xl font-black"
+          >
+            <i class="fas fa-shopping-basket mr-2"></i> ĐI CHỢ
+          </button>
+        </div>
+      </header>
+
+      <!-- Quiz View -->
+      <div id="quiz-view" class="grid grid-cols-1 lg:grid-cols-12 gap-10">
+        <!-- Questions Area -->
+        <div class="lg:col-span-8 space-y-6">
+          <div
+            class="glass-card p-10 min-h-[500px] flex flex-col justify-between relative overflow-hidden"
+          >
+            <div
+              class="absolute top-0 right-0 w-32 h-32 bg-red-50 rounded-full -mr-16 -mt-16 opacity-40"
+            ></div>
+            <div>
+              <div class="flex justify-between items-center mb-10">
+                <span
+                  id="question-category"
+                  class="px-5 py-2 rounded-2xl bg-red-50 text-red-500 font-black text-xs uppercase tracking-widest border border-red-100"
+                  >Pronunciation</span
+                >
+                <span
+                  id="question-count"
+                  class="text-gray-300 font-black tracking-widest"
+                  >01 / 26</span
+                >
+              </div>
+              <div id="question-area">
+                <h2
+                  id="question-text"
+                  class="text-2xl md:text-3xl font-bold text-gray-800 leading-snug mb-8"
+                ></h2>
+                <div id="options-container" class="grid grid-cols-1 gap-5">
+                  <!-- Choices or Input -->
+                </div>
+              </div>
+            </div>
+
+            <div
+              class="flex justify-between items-center mt-12 pt-8 border-t border-gray-100"
+            >
+              <button
+                id="prev-btn"
+                onclick="prevQuestion()"
+                class="flex items-center text-gray-400 font-bold px-4 py-2 hover:text-red-500 transition-all disabled:opacity-20"
+              >
+                <i class="fas fa-arrow-left mr-3"></i> QUAY LẠI
+              </button>
+              <button
+                id="next-btn"
+                onclick="nextQuestion()"
+                class="bg-gray-800 text-white px-10 py-4 rounded-2xl font-black hover:bg-black shadow-2xl transition-all transform hover:scale-105 text-lg"
+              >
+                CÂU TIẾP <i class="fas fa-arrow-right ml-3"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Pot Sidebar -->
+        <div class="lg:col-span-4">
+          <div class="glass-card p-8 sticky top-8 flex flex-col items-center">
+            <h3
+              class="font-black text-red-300 mb-8 uppercase tracking-widest text-sm"
+            >
+              Nồi lẩu đang sôi
+            </h3>
+            <div id="active-pot" class="pot-wrapper">
+              <div class="steam">
+                <span style="animation-delay: 0s"></span>
+                <span style="animation-delay: 1s"></span>
+                <span style="animation-delay: 2s"></span>
+              </div>
+              <div class="ear-l pot-ear"></div>
+              <div class="ear-r pot-ear"></div>
+              <div class="pot-base"></div>
+              <div class="pot-rim">
+                <div id="soup-left" class="soup-l"></div>
+                <div id="soup-right" class="soup-r"></div>
+              </div>
+            </div>
+            <div class="w-full text-center mt-8">
+              <p id="pot-status" class="text-gray-400 font-bold italic text-sm">
+                Nhanh tay nhúng lẩu nào!
+              </p>
+              <div
+                id="pot-tray"
+                class="flex flex-wrap justify-center gap-3 mt-6"
+              ></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Shop View -->
+      <div id="shop-view" class="hidden fade-in">
+        <div class="flex items-center mb-12 space-x-6">
+          <button
+            onclick="toggleView('quiz')"
+            class="w-16 h-16 rounded-full bg-white shadow-xl flex items-center justify-center text-red-500 hover:scale-110 transition"
+          >
+            <i class="fas fa-chevron-left text-3xl"></i>
+          </button>
+          <h2
+            class="text-4xl font-black text-gray-800 tracking-tighter uppercase"
+          >
+            Siêu Thị Đồ Nhúng 🦐
+          </h2>
+        </div>
+        <div
+          class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-8"
+          id="shop-items"
+        ></div>
+      </div>
+
+      <!-- Result View -->
+      <div
+        id="result-view"
+        class="hidden glass-card p-16 text-center space-y-12 fade-in"
+      >
+        <div class="inline-block relative">
+          <div class="text-[100px]">🏆</div>
+          <div
+            class="absolute -top-4 -right-4 bg-red-500 text-white w-14 h-14 rounded-full flex items-center justify-center font-black text-xl animate-bounce"
+          >
+            !
+          </div>
+        </div>
+        <h2
+          class="text-5xl font-black text-gray-800 tracking-tighter uppercase"
+        >
+          Bữa Tiệc Thịnh Soạn!
+        </h2>
+
+        <div class="flex flex-wrap justify-center gap-10">
+          <div
+            class="bg-red-50 p-8 rounded-[40px] border-4 border-white shadow-sm min-w-[200px]"
+          >
+            <p
+              class="text-red-400 font-black text-xs uppercase tracking-widest mb-2"
+            >
+              Đúng được
+            </p>
+            <p id="res-correct" class="text-6xl font-black text-red-600">
+              0/26
+            </p>
+          </div>
+          <div
+            class="bg-orange-50 p-8 rounded-[40px] border-4 border-white shadow-sm min-w-[200px]"
+          >
+            <p
+              class="text-orange-400 font-black text-xs uppercase tracking-widest mb-2"
+            >
+              Số dư Xu
+            </p>
+            <p id="res-score" class="text-6xl font-black text-orange-500">0</p>
+          </div>
+        </div>
+
+        <div
+          class="py-16 bg-white/50 rounded-[60px] border-4 border-dashed border-red-100 flex flex-col items-center"
+        >
+          <h4 class="font-black text-gray-400 mb-10 uppercase tracking-widest">
+            Nồi lẩu thành phẩm của bạn
+          </h4>
+          <div
+            id="final-pot-display"
+            class="transform scale-150 origin-center my-16 flex justify-center w-full"
+          >
+            <!-- Cloned Pot goes here -->
+          </div>
+        </div>
+
+        <button
+          onclick="location.reload()"
+          class="bg-gray-800 text-white px-20 py-6 rounded-[30px] font-black text-2xl hover:bg-black shadow-2xl transition-all transform hover:scale-105"
+        >
+          THỬ SỨC LẠI
+        </button>
+      </div>
+    </div>
+
+    <!-- Modal -->
+    <div
+      id="modal"
+      class="fixed inset-0 bg-red-950/20 backdrop-blur-xl hidden flex items-center justify-center z-50 p-6"
+    >
+      <div
+        class="bg-white rounded-[55px] p-12 max-w-sm w-full text-center shadow-3xl border-b-[15px] border-red-400"
+      >
+        <div id="modal-icon" class="text-9xl mb-8"></div>
+        <h3
+          id="modal-title"
+          class="text-4xl font-black mb-3 text-gray-800 tracking-tighter"
+        ></h3>
+        <p id="modal-body" class="text-gray-400 font-bold text-lg mb-10"></p>
+        <button
+          onclick="closeModal()"
+          class="w-full bg-red-500 text-white font-black py-5 rounded-3xl hover:bg-red-600 shadow-xl transition-all text-xl uppercase tracking-widest"
+        >
+          Tiếp tục
+        </button>
+      </div>
+    </div>
+
+    <script>
+      const questions = [
+        {
+          id: 1,
+          cat: "Pronunciation",
+          q: "Chọn từ có phần gạch chân phát âm khác:",
+          options: [
+            "visit<u class='underlined'>ed</u>",
+            "walk<u class='underlined'>ed</u>",
+            "watch<u class='underlined'>ed</u>",
+            "clapp<u class='underlined'>ed</u>",
+          ],
+          correct: 0,
+        },
+        {
+          id: 2,
+          cat: "Pronunciation",
+          q: "Chọn từ có phần gạch chân phát âm khác:",
+          options: [
+            "tow<u class='underlined'>e</u>r",
+            "matt<u class='underlined'>e</u>r",
+            "pr<u class='underlined'>e</u>tty",
+            "dinn<u class='underlined'>e</u>r",
+          ],
+          correct: 2,
+        },
+        {
+          id: 3,
+          cat: "Stress",
+          q: "Chọn từ có trọng âm khác:",
+          options: ["explore", "mountain", "enjoy", "repeat"],
+          correct: 1,
+        },
+        {
+          id: 4,
+          cat: "Stress",
+          q: "Chọn từ có trọng âm khác:",
+          options: ["holiday", "badminton", "festival", "banana"],
+          correct: 3,
+        },
+        {
+          id: 5,
+          cat: "Grammar",
+          q: "I haven't got ______ pets, but my friend has got a parrot.",
+          options: ["any", "some", "one", "much"],
+          correct: 0,
+        },
+        {
+          id: 6,
+          cat: "Grammar",
+          q: "Peggy wants ______ a famous singer when she grows up.",
+          options: ["be", "are", "to being", "to be"],
+          correct: 3,
+        },
+        {
+          id: 7,
+          cat: "Grammar",
+          q: "The children ______ with the sand on the beach now.",
+          options: ["plays", "are playing", "is playing", "playing"],
+          correct: 1,
+        },
+        {
+          id: 8,
+          cat: "Grammar",
+          q: "______ do you like cycling around the park? - Because it helps me to keep fit.",
+          options: ["What", "Where", "When", "Why"],
+          correct: 3,
+        },
+        {
+          id: 9,
+          cat: "Grammar",
+          q: "Peter and his sister often go for a walk with their dog ______ Sunday mornings.",
+          options: ["on", "in", "at", "to"],
+          correct: 0,
+        },
+        {
+          id: 10,
+          cat: "Vocabulary",
+          q: "I've lost my key. Could you help me to ______ it?",
+          options: ["look after", "look out", "look at", "look for"],
+          correct: 3,
+        },
+        {
+          id: 11,
+          cat: "Vocabulary",
+          q: "Nam plays soccer three times a week, so he looks very ______.",
+          options: ["sport", "sports", "sporty", "sportable"],
+          correct: 2,
+        },
+        {
+          id: 12,
+          cat: "Vocabulary",
+          q: "Please ______ your hand.",
+          options: ["raise", "rise", "bring", "pick"],
+          correct: 0,
+        },
+        {
+          id: 13,
+          cat: "Vocabulary",
+          q: "My cousin ______ yoga.",
+          options: ["makes", "has", "does", "have"],
+          correct: 2,
+        },
+        {
+          id: 14,
+          cat: "Vocabulary",
+          q: "A ______ is a large piece of furniture where you can hang your clothes.",
+          options: ["wardrobe", "fridge", "table", "bookcase"],
+          correct: 0,
+        },
+        {
+          id: 15,
+          cat: "Error Correction",
+          q: "Find the mistake: There (A) are so (B) much (C) people in the room that I can't (D) move.",
+          options: ["are", "much", "people", "move"],
+          correct: 1,
+        },
+        {
+          id: 16,
+          cat: "Error Correction",
+          q: "Find the mistake: We (A) need 2 loaves of bread and a slice (B) of milk (C) for (D) the picnic.",
+          options: ["need", "loaves", "slice", "for"],
+          correct: 2,
+        },
+        {
+          id: 17,
+          cat: "Meaning",
+          q: "CLOSEST in meaning to: <span class='text-red-500 font-black'>Worried</span>",
+          options: ["nervous", "friendly", "attractive", "boring"],
+          correct: 0,
+        },
+        {
+          id: 18,
+          cat: "Meaning",
+          q: "CLOSEST in meaning to: <span class='text-red-500 font-black'>drugstore</span>",
+          options: ["library", "pharmacy", "hospital", "museum"],
+          correct: 1,
+        },
+        {
+          id: 19,
+          cat: "Meaning",
+          q: "OPPOSITE in meaning to: <span class='text-red-500 font-black'>dangerous</span>",
+          options: ["expensive", "sharp", "safe", "cheap"],
+          correct: 2,
+        },
+        {
+          id: 20,
+          cat: "Meaning",
+          q: "OPPOSITE in meaning to: <span class='text-red-500 font-black'>like</span>",
+          options: ["hate", "love", "enjoy", "want"],
+          correct: 0,
+        },
+        {
+          id: 21,
+          cat: "Communication",
+          q: "How can I get to the museum?",
+          options: [
+            "I don't like it.",
+            "It has a collection.",
+            "You can take bus 07.",
+            "Don't go there.",
+          ],
+          correct: 2,
+        },
+        {
+          id: 22,
+          cat: "Communication",
+          q: "Let's go to the Galaxy Cinema!",
+          options: [
+            "You're welcome.",
+            "That's not correct.",
+            "That's a good idea.",
+            "That's right.",
+          ],
+          correct: 2,
+        },
+
+        // WRITING
+        {
+          id: 23,
+          cat: "Writing",
+          q: "37. The Amazon River is longer than the Red river.<br><span class='writing-tag'>=> The Red river is ________.</span>",
+          answerKey: "shorter than the Amazon River",
+        },
+        {
+          id: 24,
+          cat: "Writing",
+          q: "38. She didn't know many English words, so she bought that dictionary.<br><span class='writing-tag'>=> Because ________.</span>",
+          answerKey:
+            "she didn't know many English words, she bought that dictionary",
+        },
+        {
+          id: 25,
+          cat: "Writing",
+          q: "39. My father will take a bus to Ho Chi Minh city next Sunday.<br><span class='writing-tag'>=> My father will go ________.</span>",
+          answerKey: "to Ho Chi Minh City by bus next Sunday",
+        },
+        {
+          id: 26,
+          cat: "Writing",
+          q: "40. It's not a good idea for students to spend too much time playing computer games.<br><span class='writing-tag'>=> Students shouldn't ________.</span>",
+          answerKey: "spend too much time playing computer games",
+        },
+      ];
+
+      const shopItems = [
+        { name: "Ba Chỉ Bò", icon: "🥩", price: 30 },
+        { name: "Tôm Sú", icon: "🍤", price: 40 },
+        { name: "Mực Ống", icon: "🦑", price: 35 },
+        { name: "Nấm Kim", icon: "🍄", price: 15 },
+        { name: "Cải Cúc", icon: "🥬", price: 10 },
+        { name: "Đậu Hũ", icon: "🧊", price: 10 },
+        { name: "Bắp Mỹ", icon: "🌽", price: 12 },
+        { name: "Mì Gói", icon: "🍜", price: 5 },
+        { name: "Cá Viên", icon: "🍡", price: 20 },
+        { name: "Đùi Gà", icon: "🍗", price: 25 },
+        { name: "Bạch Tuộc", icon: "🐙", price: 45 },
+        { name: "Thanh Cua", icon: "🦀", price: 25 },
+      ];
+
+      let currentIdx = 0;
+      let score = 0;
+      let correctCount = 0;
+      let inventory = [];
+      let userAnswers = new Map();
+
+      function init() {
+        renderQuestion();
+        renderShop();
+        updateUI();
+      }
+
+      function renderQuestion() {
+        const q = questions[currentIdx];
+        document.getElementById("question-category").innerText = q.cat;
+        document.getElementById("question-count").innerText = `${(
+          currentIdx + 1
+        )
+          .toString()
+          .padStart(2, "0")} / ${questions.length}`;
+        document.getElementById("question-text").innerHTML = q.q;
+
+        const container = document.getElementById("options-container");
+        container.innerHTML = "";
+
+        if (q.cat === "Writing") {
+          const inputWrap = document.createElement("div");
+          inputWrap.className = "flex flex-col space-y-5";
+
+          const input = document.createElement("input");
+          input.type = "text";
+          input.placeholder = "Nhập câu trả lời của bạn...";
+          input.className = "writing-input";
+          input.id = "write-field";
+
+          const submit = document.createElement("button");
+          submit.innerText = "GỬI ĐÁP ÁN";
+          submit.className =
+            "bg-red-500 text-white font-black py-4 px-10 rounded-2xl hover:bg-red-600 transition shadow-xl self-end";
+
+          if (userAnswers.has(currentIdx)) {
+            const ans = userAnswers.get(currentIdx);
+            input.value = ans.userInput;
+            input.disabled = true;
+            submit.disabled = true;
+            submit.innerText = ans.isCorrect ? "ĐÚNG RỒI! ✨" : "CHƯA ĐÚNG 🥣";
+            submit.className = ans.isCorrect
+              ? "bg-green-500 text-white font-black py-4 px-10 rounded-2xl self-end"
+              : "bg-gray-400 text-white font-black py-4 px-10 rounded-2xl self-end";
+
+            if (!ans.isCorrect) {
+              const correctTip = document.createElement("p");
+              correctTip.className = "text-red-500 font-bold mt-3 text-lg";
+              correctTip.innerHTML = `Đúng phải là: <span class="italic">${q.answerKey}</span>`;
+              inputWrap.appendChild(correctTip);
+            }
+          } else {
+            submit.onclick = () => {
+              const val = document.getElementById("write-field").value.trim();
+              if (val) handleAnswer(val);
+            };
+            input.onkeydown = (e) => {
+              if (e.key === "Enter") submit.click();
+            };
+          }
+
+          inputWrap.prepend(input);
+          inputWrap.appendChild(submit);
+          container.appendChild(inputWrap);
+          if (!userAnswers.has(currentIdx))
+            setTimeout(() => input.focus(), 100);
+        } else {
+          q.options.forEach((opt, i) => {
+            const btn = document.createElement("button");
+            btn.className =
+              "answer-btn p-7 rounded-[35px] text-left font-bold shadow-sm flex items-center group";
+
+            if (userAnswers.has(currentIdx)) {
+              const ans = userAnswers.get(currentIdx);
+              if (i === q.correct) btn.classList.add("correct");
+              else if (i === ans.choice) btn.classList.add("wrong");
+              btn.disabled = true;
+            }
+
+            btn.innerHTML = `
+                        <span class="w-14 h-14 bg-red-50 text-red-500 rounded-2xl flex items-center justify-center mr-6 group-hover:bg-red-500 group-hover:text-white transition-colors font-black text-xl">${String.fromCharCode(
+                          65 + i
+                        )}</span>
+                        <span class="text-gray-600 text-xl">${opt}</span>
+                    `;
+            btn.onclick = () => handleAnswer(i);
+            container.appendChild(btn);
+          });
+        }
+
+        document.getElementById("prev-btn").disabled = currentIdx === 0;
+        document.getElementById("next-btn").innerHTML =
+          currentIdx === questions.length - 1
+            ? 'KẾT THÚC <i class="fas fa-flag-checkered ml-3"></i>'
+            : 'CÂU TIẾP <i class="fas fa-arrow-right ml-3"></i>';
+      }
+
+      function handleAnswer(val) {
+        if (userAnswers.has(currentIdx)) return;
+        const q = questions[currentIdx];
+        let isCorrect = false;
+        let entry = {};
+
+        if (q.cat === "Writing") {
+          const normUser = val.toLowerCase().replace(/\s+/g, " ").trim();
+          const normKey = q.answerKey.toLowerCase().replace(/\s+/g, " ").trim();
+          isCorrect = normUser === normKey;
+          entry = { userInput: val, isCorrect };
+        } else {
+          isCorrect = val === q.correct;
+          entry = { choice: val, isCorrect };
+        }
+
+        userAnswers.set(currentIdx, entry);
+        if (isCorrect) {
+          score += 10;
+          correctCount++;
+          showModal("CHÍNH XÁC!", "+10 Xu! Món ngon đang chờ nhúng đó!", "✨");
+        } else {
+          showModal("TIẾC QUÁ!", "Cố gắng hơn ở câu tiếp theo nhé!", "🍵");
+        }
+        updateUI();
+        renderQuestion();
+      }
+
+      function nextQuestion() {
+        if (currentIdx < questions.length - 1) {
+          currentIdx++;
+          renderQuestion();
+        } else {
+          finishGame();
+        }
+      }
+
+      function prevQuestion() {
+        if (currentIdx > 0) {
+          currentIdx--;
+          renderQuestion();
+        }
+      }
+
+      function renderShop() {
+        const container = document.getElementById("shop-items");
+        container.innerHTML = "";
+        shopItems.forEach((item, i) => {
+          const card = document.createElement("div");
+          card.className =
+            "glass-card p-6 text-center flex flex-col items-center hover:scale-105 transition-all border-2 border-transparent hover:border-red-300 cursor-pointer";
+          card.innerHTML = `
+                    <div class="text-6xl mb-5 transform hover:rotate-12 transition-transform">${item.icon}</div>
+                    <div class="font-black text-gray-800 text-sm mb-2 uppercase tracking-tight">${item.name}</div>
+                    <div class="text-red-500 font-black text-2xl mb-5">${item.price} xu</div>
+                    <button onclick="buyItem(${i})" class="w-full bg-red-50 text-red-500 py-4 rounded-2xl font-black hover:bg-red-500 hover:text-white transition-all uppercase text-xs">NHÚNG LẨU</button>
+                `;
+          container.appendChild(card);
+        });
+      }
+
+      function buyItem(idx) {
+        const item = shopItems[idx];
+        if (score >= item.price) {
+          score -= item.price;
+          inventory.push(item);
+
+          const side = Math.random() > 0.5 ? "soup-left" : "soup-right";
+          const el = document.createElement("span");
+          el.className = "food";
+          el.innerText = item.icon;
+          el.style.left = Math.random() * 60 + 15 + "%";
+          el.style.top = Math.random() * 50 + 15 + "%";
+          document.getElementById(side).appendChild(el);
+
+          updateUI();
+          updatePotStatus();
+          showModal("ĐÃ NHÚNG!", `Đã cho ${item.name} vào nồi!`, item.icon);
+        } else {
+          showModal(
+            "KHÔNG ĐỦ XU!",
+            "Hãy trả lời thêm câu hỏi để kiếm xu nhé!",
+            "💸"
+          );
+        }
+      }
+
+      function updatePotStatus() {
+        const status = document.getElementById("pot-status");
+        const tray = document.getElementById("pot-tray");
+        status.innerText = `Đã nhúng ${inventory.length} món!`;
+        tray.innerHTML = inventory
+          .slice(-6)
+          .map(
+            (it) =>
+              `<span class="bg-white p-3 rounded-2xl shadow-sm border border-red-50 text-2xl">${it.icon}</span>`
+          )
+          .join("");
+      }
+
+      function finishGame() {
+        document.getElementById("quiz-view").classList.add("hidden");
+        document.getElementById("shop-view").classList.add("hidden");
+        const resultView = document.getElementById("result-view");
+        resultView.classList.remove("hidden");
+
+        document.getElementById("res-score").innerText = score;
+        document.getElementById(
+          "res-correct"
+        ).innerText = `${correctCount}/${questions.length}`;
+
+        const potDisplay = document.getElementById("final-pot-display");
+        if (potDisplay) {
+          const pot = document.getElementById("active-pot").cloneNode(true);
+          potDisplay.innerHTML = "";
+          potDisplay.appendChild(pot);
+        }
+      }
+
+      function toggleView(view) {
+        if (view === "shop") {
+          document.getElementById("quiz-view").classList.add("hidden");
+          document.getElementById("shop-view").classList.remove("hidden");
+        } else {
+          document.getElementById("shop-view").classList.add("hidden");
+          document.getElementById("quiz-view").classList.remove("hidden");
+        }
+      }
+
+      function updateUI() {
+        const display = document.getElementById("score-display");
+        if (display) display.innerText = score;
+      }
+
+      function showModal(title, body, icon) {
+        document.getElementById("modal-title").innerText = title;
+        document.getElementById("modal-body").innerText = body;
+        document.getElementById("modal-icon").innerText = icon;
+        document.getElementById("modal").classList.remove("hidden");
+      }
+
+      function closeModal() {
+        document.getElementById("modal").classList.add("hidden");
+      }
+
+      window.onload = init;
+    </script>
+  </body>
+</html>
